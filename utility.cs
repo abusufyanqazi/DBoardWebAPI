@@ -346,7 +346,7 @@ namespace util
                 //DataRow[] drCirDataArr = dt.Select(ColumnName + "='" + cirCode + "'");
                 for (int i = 0; i < drCirDataArr.Length; i++)
                 {
-                    JSONString.Append("\"" + "Name" + "\":" + "\"" + drCirDataArr[i]["SDIV_NAME"].ToString() + "\",");
+                    JSONString.Append("\"" + "Name" + "\":" + "\"" + drCirDataArr[i]["NAME"].ToString() + "\",");
                     JSONString.Append("\"" + "Receivable\":{");
 
                     JSONString.Append("\"" + "Private" + "\":" + "\"" + drCirDataArr[i]["PVT_REC"].ToString() +
