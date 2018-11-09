@@ -22,7 +22,7 @@ namespace DashBoardAPI
 
             utility util = new utility();
             DB_Utility objDbuTil = new DB_Utility(conStr);
-            DataTable dt = objDbuTil.GetCashCollSummary(code,DateTime.Now.AddMonths(-3));
+            DataTable dt = objDbuTil.GetCashCollSummary(code,DateTime.Now.AddMonths(-1));
             StringBuilder filterExp = new StringBuilder();
             List<CashCollection> coll = new List<CashCollection>();
             if (dt != null)
@@ -30,14 +30,14 @@ namespace DashBoardAPI
                 DataView dv = dt.DefaultView;
                 if (!string.IsNullOrEmpty(code))
                 {
-                    filterExp.AppendFormat("LEN(SDIV_CODE) >= {0} and LEN(SDIV_CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+                    filterExp.AppendFormat("LEN(CODE) >= {0} and LEN(CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
                 }
                 dv.RowFilter = filterExp.ToString();
                 dv.Sort = "SRT_ORDER2 ASC";
                 foreach (DataRowView dr in dv)
                 {
-                    string cd = utility.GetColumnValue(dr, "SDIV_CODE");
-                    string name = utility.GetColumnValue(dr, "SDIV_NAME");
+                    string cd = utility.GetColumnValue(dr, "CODE");
+                    string name = utility.GetColumnValue(dr, "NAME");
                     coll.Add(new CashCollection(cd, name, dv.ToTable()));
                 }
             }
@@ -51,7 +51,7 @@ namespace DashBoardAPI
 
             utility util = new utility();
             DB_Utility objDbuTil = new DB_Utility(conStr);
-            DataTable dt = objDbuTil.GetFeederLosses(DateTime.Now.AddMonths(-2));
+            DataTable dt = objDbuTil.GetFeederLosses(DateTime.Now.AddMonths(-1));
             StringBuilder filterExp = new StringBuilder();
             List<FeederLosses> coll = new List<FeederLosses>();
             if (dt != null)
@@ -143,10 +143,10 @@ namespace DashBoardAPI
 
             if (!string.IsNullOrEmpty(code))
             {
-                filterExp.AppendFormat("LEN(SDIV_CODE) >= {0} and LEN(SDIV_CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+                filterExp.AppendFormat("LEN(CODE) >= {0} and LEN(CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
             }
 
-            dt = objDbuTil.getReceiveables(code, DateTime.Now.AddMonths(-3));
+            dt = objDbuTil.getReceiveables(code, DateTime.Now.AddMonths(-1));
 
             if (dt != null)
             {
@@ -179,7 +179,7 @@ namespace DashBoardAPI
                 filterExp.AppendFormat("LEN(SDIV) >= {0} and LEN(SDIV) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
             }
 
-            dt = objDbuTil.getMonLosses(code, DateTime.Now.AddMonths(-2));
+            dt = objDbuTil.getMonLosses(code, DateTime.Now.AddMonths(-1));
 
             if (dt != null)
             {
@@ -196,7 +196,7 @@ namespace DashBoardAPI
             return monLosseses;
         }
 
-        public List<MonLosses> GetpPrgsLosses(string token, string code)
+        public List<MonLosses> GetPrgsLosses(string token, string code)
         {
             DataTable dt;
             utility util = new utility();
@@ -212,7 +212,7 @@ namespace DashBoardAPI
                 filterExp.AppendFormat("LEN(SDIV) >= {0} and LEN(SDIV) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
             }
 
-            dt = objDbuTil.getPrgsLosses(code, DateTime.Now.AddMonths(-3));
+            dt = objDbuTil.getPrgsLosses(code, DateTime.Now.AddMonths(-1));
 
             if (dt != null)
             {
@@ -228,12 +228,52 @@ namespace DashBoardAPI
             }
             return prgsLosseses;
         }
+        public BillStatsContainer GetBillingStatsBatchWise(string token, string code)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            StringBuilder filterExp = new StringBuilder();
+
+            if (token != secKey)
+                return null;
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                filterExp.AppendFormat("LEN(CODE) >= {0} and LEN(CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+            }
+
+            dt = objDbuTil.getBillingStatsBatchWise(code, DateTime.Now.AddMonths(-1));
+
+            if (dt != null)
+            {
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                BillStatsContainer billStContainer = new BillStatsContainer(code, dv.ToTable());
+                return billStContainer;
+
+
+                //foreach (DataRowView dr in dv)
+                //{
+                //    string cd = utility.GetColumnValue(dr, "CODE");
+                //    string name = utility.GetColumnValue(dr, "NAME");
+                //    string month = utility.GetColumnValue(dr, "MONTH");
+                //    bStats.Add(new BillingStats(month,cd,name,dv.ToTable()));
+
+                //}
+
+            }
+            return null;
+        }
+        
+
         public static string GetBillingStatus(string token)
         {
             string ret = "Error";
 
-            //if (token != secKey)
-            //    return "Ivalid Token.";
+            if (token != secKey)
+                return "Ivalid Token.";
             try
             {
                 DB_Utility objDBUTil = new DB_Utility(conStr);
