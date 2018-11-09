@@ -22,7 +22,7 @@ namespace DashBoardAPI
 
             utility util = new utility();
             DB_Utility objDbuTil = new DB_Utility(conStr);
-            DataTable dt = objDbuTil.GetCashCollSummary(code,DateTime.Now.AddMonths(-2));
+            DataTable dt = objDbuTil.GetCashCollSummary(code,DateTime.Now.AddMonths(-3));
             StringBuilder filterExp = new StringBuilder();
             List<CashCollection> coll = new List<CashCollection>();
             if (dt != null)
@@ -36,7 +36,6 @@ namespace DashBoardAPI
                 dv.Sort = "SRT_ORDER2 ASC";
                 foreach (DataRowView dr in dv)
                 {
-                    int i = 0;
                     string cd = utility.GetColumnValue(dr, "SDIV_CODE");
                     string name = utility.GetColumnValue(dr, "SDIV_NAME");
                     coll.Add(new CashCollection(cd, name, dv.ToTable()));
@@ -131,27 +130,104 @@ namespace DashBoardAPI
             return collVsBilling;
         }
 
-        public  string GetReceivable(string token, string code)
+        public List<ReceivSpillArrear> GetReceivable(string token, string code)
         {
-            string ret = "Error";
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            List<ReceivSpillArrear> receivSpillArrears = new List<ReceivSpillArrear>();
+            StringBuilder filterExp = new StringBuilder();
 
             if (token != secKey)
-                return "Ivalid Token.";
-            try
-            {
-                DB_Utility objDBUTil = new DB_Utility(conStr);
-                DataTable dt = objDBUTil.getReceiveables(code);
-                utility util = new utility();
+                return null;
 
-                ret = util.DataTableToJSONWithStringBuilder(dt);
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrEmpty(code))
             {
-                ret = ex.ToString();
+                filterExp.AppendFormat("LEN(SDIV_CODE) >= {0} and LEN(SDIV_CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
             }
-            return ret;
+
+            dt = objDbuTil.getReceiveables(code, DateTime.Now.AddMonths(-3));
+
+            if (dt != null)
+            {
+                //int i = 0;
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                foreach (DataRowView dr in dv)
+                {
+                    receivSpillArrears.Add(new ReceivSpillArrear(dr));
+
+                }
+            }
+            return receivSpillArrears;
         }
-        
+
+        public List<MonLosses> GetMonLosses(string token, string code)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            List<MonLosses> monLosseses = new List<MonLosses>();
+            StringBuilder filterExp = new StringBuilder();
+
+            if (token != secKey)
+                return null;
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                filterExp.AppendFormat("LEN(SDIV) >= {0} and LEN(SDIV) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+            }
+
+            dt = objDbuTil.getMonLosses(code, DateTime.Now.AddMonths(-2));
+
+            if (dt != null)
+            {
+                //int i = 0;
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                foreach (DataRowView dr in dv)
+                {
+                    monLosseses.Add(new MonLosses(dr));
+
+                }
+            }
+            return monLosseses;
+        }
+
+        public List<MonLosses> GetpPrgsLosses(string token, string code)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            List<MonLosses> prgsLosseses = new List<MonLosses>();
+            StringBuilder filterExp = new StringBuilder();
+
+            if (token != secKey)
+                return null;
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                filterExp.AppendFormat("LEN(SDIV) >= {0} and LEN(SDIV) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+            }
+
+            dt = objDbuTil.getPrgsLosses(code, DateTime.Now.AddMonths(-3));
+
+            if (dt != null)
+            {
+                //int i = 0;
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                foreach (DataRowView dr in dv)
+                {
+                    prgsLosseses.Add(new MonLosses(dr));
+
+                }
+            }
+            return prgsLosseses;
+        }
         public static string GetBillingStatus(string token)
         {
             string ret = "Error";

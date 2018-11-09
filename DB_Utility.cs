@@ -39,7 +39,7 @@ namespace DAL
             {
                 case 2:
                 {
-                    sortorder = "IN('3','5')";
+                    sortorder = "IN('3','4')";
                     break;
                 }
                 case 3:
@@ -54,7 +54,7 @@ namespace DAL
                 }
                 default:
                 {
-                    sortorder = "IN('3','5')";
+                    sortorder = "IN('3','4')";
                     break;
                 }
 
@@ -65,9 +65,9 @@ namespace DAL
                                     FROM VW_CASH_COLL_SUMMARY";
             if (!string.IsNullOrEmpty(code))
             {
-                sql += " WHERE SDIV_CODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder +
-                       " AND BILLMONTH='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" +
-                       " ORDER BY SRT_ORDER2";
+                sql += " WHERE SDIV_CODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder 
+                       //+ " AND BILLMONTH='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
+                     +  " ORDER BY SRT_ORDER1";
             }
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
@@ -113,10 +113,10 @@ namespace DAL
             }
             string sql = @"select ""DIV_CIR"",""DIVNAME"",""0 or below 0"" ZERO_BELOW,""0-10"" ZERO_TEN,""10 20"" TEN_TWENTY,""20 30"" TWENTY_THIRTY,
                             ""30 40"" THIRTY_FOURTY,""40 50"" FOURTY_FIFTY,""Above 50"" ABOVE_FIFTY, ""TOTAL"",""BPERIOD"",""CC_CODE"" 
-                            from VW_FEEDER_LINE_LOSS";
+                            from VW_FEEDER_LINE_LOSS"
 
-                sql += " WHERE BPERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" +
-                       " ORDER BY DIV_CIR";
+                //sql += " WHERE BPERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
+                    +   " ORDER BY DIV_CIR";
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
             DataSet ds = new DataSet();
@@ -202,7 +202,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
                 case 3:
@@ -217,7 +217,7 @@ namespace DAL
                     }		 
                 default:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
 
@@ -237,7 +237,7 @@ namespace DAL
                 sql += " WHERE SDIVCODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder;
             }
 
-            //sql += " ORDER BY SRT_ORDER2 DESC";
+            sql += " ORDER BY SRT_ORDER1";
 
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
@@ -283,7 +283,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
                 case 3:
@@ -298,7 +298,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
 
@@ -317,7 +317,7 @@ namespace DAL
                 sql += " WHERE SDIVCODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder;
             }
 
-            //sql += " ORDER BY SRT_ORDER2 DESC";
+            sql += " ORDER BY SRT_ORDER1";
 
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
@@ -351,9 +351,11 @@ namespace DAL
             return null;
         }
 
-        public DataTable getReceiveables(string code)
+        public DataTable getReceiveables(string code, DateTime billMon)
         {
-            string sql = "";
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, SDIV_CODE, SDIV_NAME, PVT_REC, GVT_REC, TOT_REC, PVT_SPILL, 
+                                      GVT_SPILL, TOT_SPILL, PVT_ARREAR, GVT_ARREAR, TOT_ARREAR, CC_CODE, B_PERIOD
+                                      FROM VW_RECIEVABLES";
             OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
@@ -364,7 +366,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
                 case 3:
@@ -379,7 +381,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','5')";
+                        sortorder = "IN('3','4')";
                         break;
                     }
 
@@ -389,13 +391,16 @@ namespace DAL
             {
                 con.Open();
             }
-            cmd = new OracleCommand(@"SELECT SRT_ORDER2, SRT_ORDER1, SDIV_CODE SDIVCODE, SDIV_NAME, PVT_REC, GVT_REC, TOT_REC, PVT_SPILL, GVT_SPILL, TOT_SPILL, PVT_ARREAR, GVT_ARREAR, TOT_ARREAR, CC_CODE, B_PERIOD
-                                     FROM VW_RECIEVABLES", con);
+            sql += " WHERE SRT_ORDER2 " + sortorder;
             if (!string.IsNullOrEmpty(code))
             {
-                sql += " WHERE SDIVCODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder;
+                sql += " AND SDIV_CODE LIKE '" + code + "%'";
             }
 
+            //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
+            sql += " ORDER BY SRT_ORDER1";
+
+            cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
             DataSet ds = new DataSet();
             OracleDataAdapter ad = new OracleDataAdapter();
@@ -427,5 +432,161 @@ namespace DAL
             return null;
         }
 
+        public DataTable getMonLosses(string code, DateTime billMon)
+        {
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, SDIV, SDIVNAME, B_PERIOD, RCV, BIL, LOS, PCT, PRV_PERIOD, PRV_RCV, PRV_BIL, PRV_LOS, PRV_PCT, VAR_INCDEC
+                           FROM VW_MONTHLY_LINE_LOSS";
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            string sortorder = "";
+
+            switch (code.Length)
+            {
+                case 2:
+                    {
+                        sortorder = "IN('3','4')";
+                        break;
+                    }
+                case 3:
+                    {
+                        sortorder = "IN('2','3')";
+                        break;
+                    }
+                case 4:
+                    {
+                        sortorder = "IN('1','2')";
+                        break;
+                    }
+                default:
+                    {
+                        sortorder = "IN('3','4')";
+                        break;
+                    }
+
+
+            }
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            sql += " WHERE SRT_ORDER2 " + sortorder;
+            if (!string.IsNullOrEmpty(code))
+            {
+                sql += " AND SDIV LIKE '" + code + "%'";
+            }
+
+            //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
+            sql += " ORDER BY SRT_ORDER1";
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            return null;
+        }
+        public DataTable getPrgsLosses(string code, DateTime billMon)
+        {
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, SDIV, SDIVNAME, B_PERIOD, RCV, BIL, LOS, PCT, PRV_PERIOD, PRV_RCV, PRV_BIL, PRV_LOS, PRV_PCT, VAR_INCDEC
+                            FROM VW_PROG_LINE_LOSSES";
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            string sortorder = "";
+
+            switch (code.Length)
+            {
+                case 2:
+                    {
+                        sortorder = "IN('3','4')";
+                        break;
+                    }
+                case 3:
+                    {
+                        sortorder = "IN('2','3')";
+                        break;
+                    }
+                case 4:
+                    {
+                        sortorder = "IN('1','2')";
+                        break;
+                    }
+                default:
+                    {
+                        sortorder = "IN('3','4')";
+                        break;
+                    }
+
+
+            }
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            sql += " WHERE SRT_ORDER2 " + sortorder;
+            if (!string.IsNullOrEmpty(code))
+            {
+                sql += " AND SDIV LIKE '" + code + "%'";
+            }
+
+            //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
+            sql += " ORDER BY SRT_ORDER1";
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            return null;
+        }
     }
 }
