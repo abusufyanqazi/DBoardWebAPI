@@ -15,18 +15,56 @@ namespace DashBoardAPI
         public string Code { get; set; }
         public string Name { get; set; }
 
-        public CollectionMainDt[] CollMD = new CollectionMainDt[31];
+        public List<CollectionMainDt> CollMD = new List<CollectionMainDt>(); 
         public CashCollection(string pCode, string pName, DataTable dt)
         {
             this.Code = pCode;
             this.Name = pName;
 
-            int i = 0;
             foreach (DataRow dr in dt.Rows)
             {
-                CollMD[i++] = new CollectionMainDt(dr);
+                CollMD.Add(new CollectionMainDt(dr));
             }
 
+            AddMainDateSummary();
+        }
+
+        public void AddMainDateSummary()
+        {
+            string mDate = "Total"; 
+            int dStub = 0; 
+            int oStubes = 0; 
+            int dAmntCollected = 0; 
+            int oAmountCollected = 0; 
+            int dAmountPosted = 0;
+            int oAmountPosted = 0; 
+            int tAmountPosted = 0; 
+            int rcoFee = 0; 
+            int advPayment = 0; 
+            int utCash = 0; 
+            int pdcPayment = 0; 
+            int gvtPayment = 0; 
+            int twellPayment=0;
+
+            foreach (CollectionMainDt md in CollMD)
+            {
+                dStub += int.Parse(md.DailyStub);
+                oStubes += int.Parse(md.OnlineStubs);
+                dAmntCollected += int.Parse(md.DailyAmountCollected);
+                oAmountCollected += int.Parse(md.OnlineAmountCollected);
+                dAmountPosted += int.Parse(md.DailyAmountPosted);
+                oAmountPosted += int.Parse(md.OnlineAmountPosted);
+                tAmountPosted += int.Parse(md.TotalAmountPosted);
+                rcoFee += int.Parse(md.RcoFee);
+                advPayment += int.Parse(md.AdvancePayment);
+                utCash += int.Parse(md.UnidentifiedCash);
+                pdcPayment += int.Parse(md.PDiscPayment);
+                gvtPayment += int.Parse(md.GovtPayment);
+                twellPayment += int.Parse(md.TubeWellPayment);
+            }
+
+            CollMD.Add(new CollectionMainDt(mDate.ToString(), dStub.ToString(), oStubes.ToString(), dAmntCollected.ToString(), oAmountCollected.ToString(),
+                dAmountPosted.ToString(), oAmountPosted.ToString(), tAmountPosted.ToString(), rcoFee.ToString(), advPayment.ToString(), utCash.ToString(), pdcPayment.ToString(), gvtPayment.ToString(), twellPayment.ToString()));
         }
 
     }
@@ -65,22 +103,23 @@ namespace DashBoardAPI
             this.TubeWellPayment = utility.GetColumnValue(dr, "TUBEWELL_PAYMENT");
         }
 
-        public CollectionMainDt()
+        public CollectionMainDt(string mDate, string dStub, string oStubes, string dAmntCollected, string oAmountCollected, string dAmountPosted,string oAmountPosted, 
+            string tAmountPosted, string rcoFee, string advPayment, string utCash, string pdcPayment, string gvtPayment, string twellPayment)
         {
-            this.MainDate = "0";
-            this.DailyStub = "0";
-            this.OnlineStubs = "0";
-            this.DailyAmountCollected = "0";
-            this.OnlineAmountCollected = "0";
-            this.DailyAmountPosted = "0";
-            this.OnlineAmountPosted = "0";
-            this.TotalAmountPosted = "0";
-            this.RcoFee = "0";
-            this.AdvancePayment = "0";
-            this.UnidentifiedCash = "0";
-            this.PDiscPayment = "0";
-            this.GovtPayment = "0";
-            this.TubeWellPayment = "0";
+            this.MainDate = mDate;
+            this.DailyStub = dStub;
+            this.OnlineStubs = oStubes;
+            this.DailyAmountCollected = dAmntCollected;
+            this.OnlineAmountCollected = oAmountCollected;
+            this.DailyAmountPosted = dAmountPosted;
+            this.OnlineAmountPosted = oAmountPosted;
+            this.TotalAmountPosted = tAmountPosted;
+            this.RcoFee = rcoFee;
+            this.AdvancePayment = advPayment;
+            this.UnidentifiedCash = utCash;
+            this.PDiscPayment = pdcPayment;
+            this.GovtPayment = gvtPayment;
+            this.TubeWellPayment = twellPayment;
         }
     }
 }
