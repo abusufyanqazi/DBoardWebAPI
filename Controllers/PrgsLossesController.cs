@@ -11,7 +11,7 @@ namespace DashBoardAPI.Controllers
     {
         public List<MonLosses> Get(string token, string code = "15")
         {
-            return new DBoardBridge().GetpPrgsLosses(token, code);
+            return new DBoardBridge().GetPrgsLosses(token, code);
         }
     }
 }
