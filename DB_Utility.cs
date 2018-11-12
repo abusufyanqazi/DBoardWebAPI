@@ -38,7 +38,7 @@ namespace DAL
             {
                 case 2:
                 {
-                    sortorder = "IN('3','4')";
+                    sortorder = "IN('3','5')";
                     break;
                 }
                 case 3:
@@ -53,18 +53,18 @@ namespace DAL
                 }
                 default:
                 {
-                    sortorder = "IN('3','4')";
+                    sortorder = "IN('3','5')";
                     break;
                 }
 
 
             }
 
-            string sql =@"SELECT SRT_ORDER2, SRT_ORDER1, BILLMONTH, MAINDATE, CODE, NAME, DAILY_STUBS, ONLINE_STUBS, NORMAL_CASH_COLLECTED, ONLINE_CASH_COLLECTED, NORMAL_CASH_POSTED, ONLINE_CASH_POSTED, TOTAL_CASH_POSTED, RCO_FEE, ADV_CASH, UNIDENTIFIED_CASH, P_DISC_PAYMENT, GOVT_PAYMENT, TUBEWELL_PAYMENT
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, BILLMONTH, MAINDATE, sdiv_code CODE, sdiv_name NAME, DAILY_STUBS, ONLINE_STUBS, NORMAL_CASH_COLLECTED, ONLINE_CASH_COLLECTED, NORMAL_CASH_POSTED, ONLINE_CASH_POSTED, TOTAL_CASH_POSTED, RCO_FEE, ADV_CASH, UNIDENTIFIED_CASH, P_DISC_PAYMENT, GOVT_PAYMENT, TUBEWELL_PAYMENT
                                     FROM VW_CASH_COLL_SUMMARY";
             if (!string.IsNullOrEmpty(code))
             {
-                sql += " WHERE CODE LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder
+                sql += " WHERE sdiv_code LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder
                        //+ " AND BILLMONTH='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
                        + " AND BILLMONTH=(SELECT MAX(BILLMONTH) FROM VW_CASH_COLL_SUMMARY)"
                        +  " ORDER BY SRT_ORDER1";
@@ -202,7 +202,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -217,7 +217,7 @@ namespace DAL
                     }		 
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
@@ -281,7 +281,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -296,7 +296,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
@@ -351,7 +351,7 @@ namespace DAL
         }
         public DataTable getReceiveables(string code, DateTime billMon)
         {
-            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, CODE, NAME, PVT_REC, GVT_REC, TOT_REC, PVT_SPILL, 
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, sdiv_code CODE, sdiv_name NAME, PVT_REC, GVT_REC, TOT_REC, PVT_SPILL, 
                                       GVT_SPILL, TOT_SPILL, PVT_ARREAR, GVT_ARREAR, TOT_ARREAR, CC_CODE, B_PERIOD
                                       FROM VW_RECIEVABLES";
             OracleConnection con = null;
@@ -364,7 +364,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -379,7 +379,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
@@ -392,7 +392,7 @@ namespace DAL
             sql += " WHERE SRT_ORDER2 " + sortorder;
             if (!string.IsNullOrEmpty(code))
             {
-                sql += " AND CODE LIKE '" + code + "%'";
+                sql += " AND sdiv_code LIKE '" + code + "%'";
             }
 
             //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
@@ -444,7 +444,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -459,7 +459,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
@@ -522,7 +522,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -537,7 +537,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
@@ -601,7 +601,7 @@ namespace DAL
             {
                 case 2:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
                 case 3:
@@ -616,7 +616,7 @@ namespace DAL
                     }
                 default:
                     {
-                        sortorder = "IN('3','4')";
+                        sortorder = "IN('3','5')";
                         break;
                     }
 
