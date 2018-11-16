@@ -34,33 +34,33 @@ namespace DashBoardAPI
             string mDate = "Total"; 
             int dStub = 0; 
             int oStubes = 0; 
-            int dAmntCollected = 0; 
-            int oAmountCollected = 0; 
-            int dAmountPosted = 0;
-            int oAmountPosted = 0; 
-            int tAmountPosted = 0; 
-            int rcoFee = 0; 
-            int advPayment = 0; 
-            int utCash = 0; 
-            int pdcPayment = 0; 
-            int gvtPayment = 0; 
-            int twellPayment=0;
+            Int64 dAmntCollected = 0;
+            Int64 oAmountCollected = 0;
+            Int64 dAmountPosted = 0;
+            Int64 oAmountPosted = 0;
+            Int64 tAmountPosted = 0; 
+            int rcoFee = 0;
+            Int64 advPayment = 0;
+            Int64 utCash = 0;
+            Int64 pdcPayment = 0;
+            Int64 gvtPayment = 0;
+            Int64 twellPayment = 0;
 
             foreach (CollectionMainDt md in CollMD)
             {
                 dStub += int.Parse(md.DailyStub);
                 oStubes += int.Parse(md.OnlineStubs);
-                dAmntCollected += int.Parse(md.DailyAmountCollected);
-                oAmountCollected += int.Parse(md.OnlineAmountCollected);
-                dAmountPosted += int.Parse(md.DailyAmountPosted);
-                oAmountPosted += int.Parse(md.OnlineAmountPosted);
-                tAmountPosted += int.Parse(md.TotalAmountPosted);
+                dAmntCollected += Int64.Parse(md.DailyAmountCollected);
+                oAmountCollected += Int64.Parse(md.OnlineAmountCollected);
+                dAmountPosted += Int64.Parse(md.DailyAmountPosted);
+                oAmountPosted += Int64.Parse(md.OnlineAmountPosted);
+                tAmountPosted += Int64.Parse(md.TotalAmountPosted);
                 rcoFee += int.Parse(md.RcoFee);
-                advPayment += int.Parse(md.AdvancePayment);
-                utCash += int.Parse(md.UnidentifiedCash);
-                pdcPayment += int.Parse(md.PDiscPayment);
-                gvtPayment += int.Parse(md.GovtPayment);
-                twellPayment += int.Parse(md.TubeWellPayment);
+                advPayment += Int64.Parse(md.AdvancePayment);
+                utCash += Int64.Parse(md.UnidentifiedCash);
+                pdcPayment += Int64.Parse(md.PDiscPayment);
+                gvtPayment += Int64.Parse(md.GovtPayment);
+                twellPayment += Int64.Parse(md.TubeWellPayment);
             }
 
             CollMD.Add(new CollectionMainDt(mDate.ToString(), dStub.ToString(), oStubes.ToString(), dAmntCollected.ToString(), oAmountCollected.ToString(),

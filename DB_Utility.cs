@@ -665,5 +665,86 @@ namespace DAL
             }
             return null;
         }
+
+
+        public DataTable getBillingStatsDaily(string code, DateTime billMon)
+        {
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, MONTH, SDIV_CODE CODE, SDIV_NAME NAME, TNOCONSUMERS, NOUNBILLEDCASES, NOSTSREADING, NODISCASES, NORECCASES, NOMCOCASES, NODEFMETERS, LOCKCASES, NONEWCONN, CREDBALCONSM, NOHEAVYBCASES, CREDBALAMT "
+                        + " from VW_BILLING_STATS_DAILY "
+                        + " where MONTH = (select max(MONTH) from VW_BILLING_STATS_DAILY)";
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            string sortorder = "";
+
+            switch (code.Length)
+            {
+                case 2:
+                    {
+                        sortorder = "IN('3','5')";
+                        break;
+                    }
+                case 3:
+                    {
+                        sortorder = "IN('2','3')";
+                        break;
+                    }
+                case 4:
+                    {
+                        sortorder = "IN('1','2')";
+                        break;
+                    }
+                default:
+                    {
+                        sortorder = "IN('3','5')";
+                        break;
+                    }
+
+
+            }
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            sql += " AND SRT_ORDER2 " + sortorder;
+            if (!string.IsNullOrEmpty(code))
+            {
+                sql += " AND SDIV_CODE LIKE '" + code + "%'";
+            }
+
+            //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
+            sql += " ORDER BY SRT_ORDER1";
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            return null;
+        }
     }
 }

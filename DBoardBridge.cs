@@ -34,11 +34,15 @@ namespace DashBoardAPI
                 }
                 dv.RowFilter = filterExp.ToString();
                 dv.Sort = "SRT_ORDER2 ASC";
-                foreach (DataRowView dr in dv)
+                DataView distinctview = new DataView(dt);
+                DataTable distinctValues = distinctview.ToTable(true, "CODE", "NAME");
+                foreach (DataRow dr in distinctValues.Rows)
                 {
                     string cd = utility.GetColumnValue(dr, "CODE");
                     string name = utility.GetColumnValue(dr, "NAME");
-                    coll.Add(new CashCollection(cd, name, dv.ToTable()));
+                    dv.RowFilter = string.Format("CODE = '{0}'",cd);
+                    DataTable dt1 = dv.ToTable();
+                    coll.Add(new CashCollection(cd, name, dt1));
                 }
             }
             return coll;
@@ -230,7 +234,7 @@ namespace DashBoardAPI
         }
         public BillStatsContainer GetBillingStatsBatchWise(string token, string code)
         {
-            DataTable dt;
+            DataTable dtD,dtB;
             utility util = new utility();
             DB_Utility objDbuTil = new DB_Utility(conStr);
             StringBuilder filterExp = new StringBuilder();
@@ -243,14 +247,21 @@ namespace DashBoardAPI
                 filterExp.AppendFormat("LEN(CODE) >= {0} and LEN(CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
             }
 
-            dt = objDbuTil.getBillingStatsBatchWise(code, DateTime.Now.AddMonths(-1));
+            dtD = objDbuTil.getBillingStatsDaily(code, DateTime.Now.AddMonths(-1));
+            dtB = objDbuTil.getBillingStatsBatchWise(code, DateTime.Now.AddMonths(-1));
 
-            if (dt != null)
+            if (dtD != null)
             {
-                DataView dv = dt.DefaultView;
-                dv.RowFilter = filterExp.ToString();
-                dv.Sort = "SRT_ORDER2 ASC";
-                BillStatsContainer billStContainer = new BillStatsContainer(code, dv.ToTable());
+                DataView dvD = dtD.DefaultView;
+                dvD.RowFilter = filterExp.ToString();
+                dvD.Sort = "SRT_ORDER2 ASC";
+
+                DataView dvB = dtB.DefaultView;
+                dvB.RowFilter = filterExp.ToString();
+                dvB.Sort = "SRT_ORDER2 ASC";
+
+
+                BillStatsContainer billStContainer = new BillStatsContainer(code, dvD.ToTable(), dvB.ToTable());
                 return billStContainer;
 
 
@@ -267,6 +278,45 @@ namespace DashBoardAPI
             return null;
         }
         
+        //
+        public BillStatsDailyContainer GetBillingStatsDaily(string token, string code)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            StringBuilder filterExp = new StringBuilder();
+
+            if (token != secKey)
+                return null;
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                filterExp.AppendFormat("LEN(CODE) >= {0} and LEN(CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+            }
+
+            dt = objDbuTil.getBillingStatsDaily(code, DateTime.Now.AddMonths(-1));
+
+            if (dt != null)
+            {
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                BillStatsDailyContainer billStContainer = new BillStatsDailyContainer(code, dv.ToTable());
+                return billStContainer;
+
+
+                //foreach (DataRowView dr in dv)
+                //{
+                //    string cd = utility.GetColumnValue(dr, "CODE");
+                //    string name = utility.GetColumnValue(dr, "NAME");
+                //    string month = utility.GetColumnValue(dr, "MONTH");
+                //    bStats.Add(new BillingStats(month,cd,name,dv.ToTable()));
+
+                //}
+
+            }
+            return null;
+        }
 
         public static string GetBillingStatus(string token)
         {

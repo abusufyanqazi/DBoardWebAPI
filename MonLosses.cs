@@ -31,7 +31,7 @@ namespace DashBoardAPI
                 utility.GetColumnValue(dr, "PRV_BIL"),
                 utility.GetColumnValue(dr, "PRV_LOS"),
                 utility.GetColumnValue(dr, "PRV_PCT"),
-                utility.GetColumnValue(dr, "B_PERIOD"));
+                utility.GetColumnValue(dr, "PRV_PERIOD"));
         }
     }
 

@@ -8,39 +8,36 @@ using util;
 namespace DashBoardAPI
 {
 
-    public class BillStatsContainer
+    public class BillStatsDailyContainer
     {
-        public  List<BillingStatsBatch> collBillStats = new List<BillingStatsBatch>();
-        public List<BillingStatsSummary> billStatSummary=new List<BillingStatsSummary>();
+        public List<BillingStatsDaily> collBillStats = new List<BillingStatsDaily>();
+        public List<BillingStatsSummaryDaily> billStatSummary = new List<BillingStatsSummaryDaily>();
 
-        public BillStatsContainer(string code, DataTable dtDaily, DataTable dtBatch)
+        public BillStatsDailyContainer(string code, DataTable dt)
         {
-            if (dtDaily != null && dtBatch != null)
+            if (dt != null)
             {
-                foreach (DataRow dr in dtDaily.Select("CODE='" + code + "'"))
+                foreach (DataRow dr in dt.Select("CODE='" + code + "'"))
                 {
-                    foreach (DataRow dr2 in dtBatch.Select("CODE='" + code + "'"))
-                    {
-                        collBillStats.Add(new BillingStatsBatch(dr2));
-                    }
+
+                    collBillStats.Add(new BillingStatsDaily(dr));
                 }
 
-                collBillStats.Add(BillingStatsSummary.GetBillStatBatchSummaryNE(code, dtDaily));
-                foreach (DataRow dr in dtDaily.Select("CODE <> '" + code + "'"))
+                collBillStats.Add(BillingStatsSummaryDaily.GetBillStatBatchSummaryDailyNE(code, dt));
+                foreach (DataRow dr in dt.Select("CODE <> '" + code + "'"))
                 {
-                    
+
                     string name = utility.GetColumnValue(dr, "NAME");
                     string month = utility.GetColumnValue(dr, "MONTH");
-                    string scode  =utility.GetColumnValue(dr, "CODE");
-                    billStatSummary.Add(new BillingStatsSummary(month, scode, name, dtDaily));
+                    string scode = utility.GetColumnValue(dr, "CODE");
+                    billStatSummary.Add(new BillingStatsSummaryDaily(month, scode, name, dt));
                 }
             }
         }
     }
 
-    public class BillingStatsBatch
+    public class BillingStatsDaily
     {
-        public string BATCH { get; set; }
         public string TNOCONSUMERS { get; set; }
         public string NOUNBILLEDCASES { get; set; }
         public string NOSTSREADING { get; set; }
@@ -54,9 +51,8 @@ namespace DashBoardAPI
         public string NOHEAVYBCASES { get; set; }
         public string CREDBALAMT { get; set; }
 
-        public BillingStatsBatch(DataRow dr)
+        public BillingStatsDaily(DataRow dr)
         {
-            this.BATCH = utility.GetColumnValue(dr, "BATCH");
             this.TNOCONSUMERS = utility.GetColumnValue(dr, "TNOCONSUMERS");
             this.NOUNBILLEDCASES = utility.GetColumnValue(dr, "NOUNBILLEDCASES");
             this.NOSTSREADING = utility.GetColumnValue(dr, "NOSTSREADING");
@@ -71,11 +67,10 @@ namespace DashBoardAPI
             this.CREDBALAMT = utility.GetColumnValue(dr, "CREDBALAMT");
         }
 
-        public BillingStatsBatch(string BAT, string TOTCONS, string BILLEDCASES, string STSREADING,
+        public BillingStatsDaily(string TOTCONS, string BILLEDCASES, string STSREADING,
             string DISCASES, string RECCASES, string MCOCASES, string DEFMETERS, string LCKCASES, string NEWCONN,
             string CRBALCONS, string HEAVYCASES, string CRBALAMNT)
         {
-            this.BATCH = BAT;
             this.TNOCONSUMERS = TOTCONS;
             this.NOUNBILLEDCASES = BILLEDCASES;
             this.NOSTSREADING = STSREADING;
@@ -91,23 +86,22 @@ namespace DashBoardAPI
         }
     }
 
-    public class BillingStatsSummary
+    public class BillingStatsSummaryDaily
     {
-        public string MONTH { get; set; } 
+        public string MONTH { get; set; }
         public string CODE { get; set; }
         public string NAME { get; set; }
-        public BillingStatsBatch total;
+        public BillingStatsDaily total;
 
-        public  BillingStatsSummary(string mONTH, string cODE, string nAME, DataTable dt) 
+        public BillingStatsSummaryDaily(string mONTH, string cODE, string nAME, DataTable dt)
         {
             this.MONTH = mONTH;
             this.CODE = cODE;
             this.NAME = nAME;
-            total = GetBillStatBatchSummaryE(cODE,dt);
+            total = GetBillStatBatchSummaryDailyE(cODE, dt);
         }
-        public static BillingStatsBatch GetBillStatBatchSummaryNE(string code, DataTable dt)
+        public static BillingStatsDaily GetBillStatBatchSummaryDailyNE(string code, DataTable dt)
         {
-            string BATCH = "TOTAL";
             string SDIV_CODE = "TOTAL";
             string SDIV_NAME = "TOTAL";
             int TNOCONSUMERS = 0;
@@ -123,7 +117,7 @@ namespace DashBoardAPI
             int NOHEAVYBCASES = 0;
             Int64 CREDBALAMT = 0;
 
-            foreach (DataRow bs in dt.Select("CODE <> '"+ code + "'"))
+            foreach (DataRow bs in dt.Select("CODE <> '" + code + "'"))
             {
                 TNOCONSUMERS += int.Parse(utility.GetColumnValue(bs, "TNOCONSUMERS"));
                 NOUNBILLEDCASES += int.Parse(utility.GetColumnValue(bs, "NOUNBILLEDCASES"));
@@ -139,14 +133,13 @@ namespace DashBoardAPI
                 CREDBALAMT += Int64.Parse(utility.GetColumnValue(bs, "CREDBALAMT"));
             }
 
-            return new BillingStatsBatch(BATCH, TNOCONSUMERS.ToString(), NOUNBILLEDCASES.ToString(),
+            return new BillingStatsDaily(TNOCONSUMERS.ToString(), NOUNBILLEDCASES.ToString(),
                 NOSTSREADING.ToString(), NODISCASES.ToString(), NORECCASES.ToString(), NOMCOCASES.ToString(), NODEFMETERS.ToString(), LOCKCASES.ToString(), NONEWCONN.ToString(),
                 CREDBALCONSM.ToString(), NOHEAVYBCASES.ToString(), CREDBALAMT.ToString());
 
         }
-        public static BillingStatsBatch GetBillStatBatchSummaryE(string code, DataTable dt)
+        public static BillingStatsDaily GetBillStatBatchSummaryDailyE(string code, DataTable dt)
         {
-            string BATCH = "TOTAL";
             string SDIV_CODE = "TOTAL";
             string SDIV_NAME = "TOTAL";
             int TNOCONSUMERS = 0;
@@ -178,12 +171,12 @@ namespace DashBoardAPI
                 CREDBALAMT += Int64.Parse(utility.GetColumnValue(bs, "CREDBALAMT"));
             }
 
-            return new BillingStatsBatch(BATCH, TNOCONSUMERS.ToString(), NOUNBILLEDCASES.ToString(),
+            return new BillingStatsDaily(TNOCONSUMERS.ToString(), NOUNBILLEDCASES.ToString(),
                 NOSTSREADING.ToString(), NODISCASES.ToString(), NORECCASES.ToString(), NOMCOCASES.ToString(), NODEFMETERS.ToString(), LOCKCASES.ToString(), NONEWCONN.ToString(),
                 CREDBALCONSM.ToString(), NOHEAVYBCASES.ToString(), CREDBALAMT.ToString());
 
         }
     }
 
-  
+
 }
