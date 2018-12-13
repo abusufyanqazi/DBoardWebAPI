@@ -447,6 +447,13 @@ namespace util
             return jsSerializer.Serialize(parentRow);
         }
 
+        public static string GetFormatedDate(string unfDate)
+        {
+            DateTime fDate = new DateTime(1900, 01, 01);
+            DateTime.TryParse(unfDate, out fDate);
+            return fDate.ToString("dd-MMM-yy");
+        }
+
         public string FormatDecimal(decimal value)
         {
             return value.ToString("00000000000.00");

@@ -26,7 +26,7 @@ namespace DAL
             OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
-            
+
             if (con.State != ConnectionState.Open)
             {
                 con.Open();
@@ -37,37 +37,37 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                {
-                    sortorder = "IN('3','5')";
-                    break;
-                }
+                    {
+                        sortorder = "IN('3','5')";
+                        break;
+                    }
                 case 3:
-                {
-                    sortorder = "IN('2','3')";
-                    break;
-                }
+                    {
+                        sortorder = "IN('2','3')";
+                        break;
+                    }
                 case 4:
-                {
-                    sortorder = "IN('1','2')";
-                    break;
-                }
+                    {
+                        sortorder = "IN('1','2')";
+                        break;
+                    }
                 default:
-                {
-                    sortorder = "IN('3','5')";
-                    break;
-                }
+                    {
+                        sortorder = "IN('3','5')";
+                        break;
+                    }
 
 
             }
 
-            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, BILLMONTH, MAINDATE, sdiv_code CODE, sdiv_name NAME, DAILY_STUBS, ONLINE_STUBS, NORMAL_CASH_COLLECTED, ONLINE_CASH_COLLECTED, NORMAL_CASH_POSTED, ONLINE_CASH_POSTED, TOTAL_CASH_POSTED, RCO_FEE, ADV_CASH, UNIDENTIFIED_CASH, P_DISC_PAYMENT, GOVT_PAYMENT, TUBEWELL_PAYMENT
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, BILLMONTH, MAINDATE, MAINDATEC, sdiv_code CODE, sdiv_name NAME, DAILY_STUBS, ONLINE_STUBS, NORMAL_CASH_COLLECTED, ONLINE_CASH_COLLECTED, NORMAL_CASH_POSTED, ONLINE_CASH_POSTED, TOTAL_CASH_POSTED, RCO_FEE, ADV_CASH, UNIDENTIFIED_CASH, P_DISC_PAYMENT, GOVT_PAYMENT, TUBEWELL_PAYMENT
                                     FROM VW_CASH_COLL_SUMMARY";
             if (!string.IsNullOrEmpty(code))
             {
                 sql += " WHERE sdiv_code LIKE '" + code + "%' AND SRT_ORDER2 " + sortorder
                        //+ " AND BILLMONTH='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
                        + " AND BILLMONTH=(SELECT MAX(BILLMONTH) FROM VW_CASH_COLL_SUMMARY)"
-                       +  " ORDER BY SRT_ORDER1";
+                       + " ORDER BY SRT_ORDER1";
             }
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
@@ -86,7 +86,7 @@ namespace DAL
             {
                 DataTable dtErr = new DataTable();
                 dtErr.Columns.Add("Desc");
-                DataRow drErr= dtErr.NewRow();
+                DataRow drErr = dtErr.NewRow();
                 drErr["Desc"] = ex.ToString();
                 dtErr.Rows.Add(drErr);
                 return dtErr;
@@ -102,10 +102,10 @@ namespace DAL
         }
         public DataTable GetFeederLosses(DateTime billMon)
         {
-             OracleConnection con = null;
+            OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
-            
+
             if (con.State != ConnectionState.Open)
             {
                 con.Open();
@@ -115,9 +115,9 @@ namespace DAL
                 @"select ""DIV_CIR"",""DIVNAME"",""0 or below 0"" ZERO_BELOW,""0-10"" ZERO_TEN,""10 20"" TEN_TWENTY,""20 30"" TWENTY_THIRTY,
                             ""30 40"" THIRTY_FOURTY,""40 50"" FOURTY_FIFTY,""Above 50"" ABOVE_FIFTY, ""TOTAL"",""BPERIOD"",""CC_CODE"" 
                             from VW_FEEDER_LINE_LOSS";
-                //sql += " WHERE BPERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
+            //sql += " WHERE BPERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'" 
             sql += " WHERE BPERIOD=(SELECT MAX(BPERIOD) FROM VW_FEEDER_LINE_LOSS)"
-                    +   " ORDER BY DIV_CIR";
+                   + " ORDER BY DIV_CIR";
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
             DataSet ds = new DataSet();
@@ -135,7 +135,7 @@ namespace DAL
             {
                 DataTable dtErr = new DataTable();
                 dtErr.Columns.Add("Desc");
-                DataRow drErr= dtErr.NewRow();
+                DataRow drErr = dtErr.NewRow();
                 drErr["Desc"] = ex.ToString();
                 dtErr.Rows.Add(drErr);
                 return dtErr;
@@ -177,10 +177,10 @@ namespace DAL
             {
                 DataTable dtErr = new DataTable();
                 dtErr.Columns.Add("Desc");
-                    DataRow drErr= dtErr.NewRow();
-                    drErr["Desc"] = ex.ToString();
-                    dtErr.Rows.Add(drErr);
-                    return dtErr;
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
             }
             finally
             {
@@ -201,25 +201,25 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }		 
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -280,25 +280,25 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -357,31 +357,31 @@ namespace DAL
             OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
-           
+
             string sortorder = "";
 
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -443,25 +443,25 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -521,25 +521,25 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -589,8 +589,88 @@ namespace DAL
         public DataTable getBillingStatsBatchWise(string code, DateTime billMon)
         {
             string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, MONTH, BATCH, SDIV_CODE CODE, SDIV_NAME NAME, TNOCONSUMERS, NOUNBILLEDCASES, NOSTSREADING, NODISCASES, NORECCASES, NOMCOCASES, NODEFMETERS, LOCKCASES, NONEWCONN, CREDBALCONSM, NOHEAVYBCASES, CREDBALAMT "
-                        +" from VW_BILLING_STATS_BATCHWISE "
-                        +" where MONTH = (select max(MONTH) from VW_BILLING_STATS_BATCHWISE)";
+                         + " from VW_BILLING_STATS_BATCHWISE "
+                         + " where MONTH = (select max(MONTH) from VW_BILLING_STATS_BATCHWISE)";
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            string sortorder = "";
+
+            switch (code.Length)
+            {
+                case 2:
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
+                case 3:
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
+                case 4:
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
+                default:
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
+
+
+            }
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            sql += " AND SRT_ORDER2 " + sortorder;
+            if (!string.IsNullOrEmpty(code))
+            {
+                sql += " AND SDIV_CODE LIKE '" + code + "%'";
+            }
+
+            //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
+            sql += " ORDER BY SRT_ORDER1";
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            return null;
+        }
+
+        public DataTable getAssesmentBatchWise(string code, DateTime billMon)
+        {
+            string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, MONTH, BATCH, SDIV_CODE, SDIV_NAME, NOBILLSISSUED, OPB, CURASSESS, GOVTASSESS, NET, UNITBILLED, RURALUNITBILLED, URBANUNITBILLED, NOADJUSTM, UNITADJ, AMTADJ, NODETADJ, DETADJUNITS, DETADJAMT"
+                         + " from VW_ASSESMENT_BATCHWISE "
+                         + " where MONTH = (select max(MONTH) from VW_ASSESMENT_BATCHWISE)";
             OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
@@ -666,12 +746,11 @@ namespace DAL
             return null;
         }
 
-
         public DataTable getBillingStatsDaily(string code, DateTime billMon)
         {
             string sql = @"SELECT SRT_ORDER2, SRT_ORDER1, MONTH, SDIV_CODE CODE, SDIV_NAME NAME, TNOCONSUMERS, NOUNBILLEDCASES, NOSTSREADING, NODISCASES, NORECCASES, NOMCOCASES, NODEFMETERS, LOCKCASES, NONEWCONN, CREDBALCONSM, NOHEAVYBCASES, CREDBALAMT "
-                        + " from VW_BILLING_STATS_DAILY "
-                        + " where MONTH = (select max(MONTH) from VW_BILLING_STATS_DAILY)";
+                         + " from VW_BILLING_STATS_DAILY "
+                         + " where MONTH = (select max(MONTH) from VW_BILLING_STATS_DAILY)";
             OracleConnection con = null;
             OracleCommand cmd;
             con = new OracleConnection(_constr);
@@ -681,25 +760,25 @@ namespace DAL
             switch (code.Length)
             {
                 case 2:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
                 case 3:
-                    {
-                        sortorder = "IN('2','3')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('2','3')";
+                    break;
+                }
                 case 4:
-                    {
-                        sortorder = "IN('1','2')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('1','2')";
+                    break;
+                }
                 default:
-                    {
-                        sortorder = "IN('3','5')";
-                        break;
-                    }
+                {
+                    sortorder = "IN('3','5')";
+                    break;
+                }
 
 
             }
@@ -715,6 +794,54 @@ namespace DAL
 
             //sql += " AND B_PERIOD='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'";
             sql += " ORDER BY SRT_ORDER1";
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            return null;
+        }
+
+        public DataTable getTheftData(string refNo)
+        {
+            string sql = @"select BILL_MNTH, NOTE_NO, ADJ_DT, UNITS, AMOUNT,PAY_AGAINTS_DET"
+                         + " from vw_theft_dt_portal "
+                         + " where BATCH||SDIV|| CONS_NO ='" + refNo + "'";
+            OracleConnection con = null;
+            OracleCommand cmd;
+            string mndConStr = System.Configuration.ConfigurationManager.ConnectionStrings["MND_CONSTR"].ToString();
+            con = new OracleConnection(mndConStr);
+
+            
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+           
             cmd = new OracleCommand(sql, con);
             cmd.CommandType = CommandType.Text;
             DataSet ds = new DataSet();

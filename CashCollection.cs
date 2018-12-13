@@ -14,19 +14,31 @@ namespace DashBoardAPI
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public string MaxMainDT { get; set; }
 
         public List<CollectionMainDt> CollMD = new List<CollectionMainDt>(); 
         public CashCollection(string pCode, string pName, DataTable dt)
         {
             this.Code = pCode;
             this.Name = pName;
-
             foreach (DataRow dr in dt.Rows)
             {
                 CollMD.Add(new CollectionMainDt(dr));
             }
-
+            this.MaxMainDT = GetMaxMainDateC();
             AddMainDateSummary();
+        }
+
+        private string GetMaxMainDateC()
+        {
+            DateTime maxMainDateC = new DateTime(1900,01,01);
+            foreach (CollectionMainDt mdc in CollMD)
+            {
+                if (DateTime.Parse(mdc.MainDateC) > maxMainDateC)
+                    maxMainDateC = DateTime.Parse(mdc.MainDateC);
+            }
+
+            return maxMainDateC.ToString("dd-MMM-yy");
         }
 
         public void AddMainDateSummary()
@@ -71,6 +83,7 @@ namespace DashBoardAPI
     public class CollectionMainDt
     {
         public string MainDate { get; set; }
+        public string MainDateC { get; set; }
         public string DailyStub{ get; set; }
         public string OnlineStubs{ get; set; }
         public string DailyAmountCollected	{ get; set; }
@@ -88,6 +101,7 @@ namespace DashBoardAPI
         public CollectionMainDt(DataRow dr)
         {
             this.MainDate = utility.GetColumnValue(dr, "MAINDATE");
+            this.MainDateC = utility.GetColumnValue(dr, "MAINDATEC");
             this.DailyStub = utility.GetColumnValue(dr, "DAILY_STUBS");
             this.OnlineStubs = utility.GetColumnValue(dr, "ONLINE_STUBS");
             this.DailyAmountCollected = utility.GetColumnValue(dr, "NORMAL_CASH_COLLECTED");

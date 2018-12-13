@@ -277,7 +277,6 @@ namespace DashBoardAPI
             }
             return null;
         }
-        
         //
         public BillStatsDailyContainer GetBillingStatsDaily(string token, string code)
         {
@@ -318,6 +317,64 @@ namespace DashBoardAPI
             return null;
         }
 
+        public List<TheftMND> GetTheftFromMND(string token, string refNo)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            StringBuilder filterExp = new StringBuilder();
+            List<TheftMND> theftData = new List<TheftMND>();
+            if (token != secKey)
+                return null;
+
+            dt = objDbuTil.getTheftData(refNo);
+
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    theftData.Add(new TheftMND(dr["BILL_MNTH"].ToString(), dr["NOTE_NO"].ToString(),
+                        dr["ADJ_DT"].ToString(), dr["UNITS"].ToString(), dr["AMOUNT"].ToString(),
+                        dr["PAY_AGAINTS_DET"].ToString()));
+                }
+            }
+
+            return theftData;
+        }
+
+        public List<AssmntBatchWiseObject> GetAssesmentBatchWise(string token, string code)
+        {
+            if (token != secKey)
+                return null;
+
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            DataTable dt = objDbuTil.getAssesmentBatchWise(code, DateTime.Now.AddMonths(-1));
+            StringBuilder filterExp = new StringBuilder();
+            List<AssmntBatchWiseObject> coll = new List<AssmntBatchWiseObject>();
+            if (dt != null)
+            {
+                DataView dv = dt.DefaultView;
+                if (!string.IsNullOrEmpty(code))
+                {
+                    filterExp.AppendFormat("LEN(SDIV_CODE) >= {0} and LEN(SDIV_CODE) <= {1}", (code.Length).ToString(), (code.Length + 1).ToString());
+                }
+                dv.RowFilter = filterExp.ToString();
+                dv.Sort = "SRT_ORDER2 ASC";
+                DataView distinctview = new DataView(dt);
+                DataTable distinctValues = distinctview.ToTable(true, "SDIV_CODE", "SDIV_NAME","MONTH");
+                foreach (DataRow dr in distinctValues.Rows)
+                {
+                    string cd = utility.GetColumnValue(dr, "SDIV_CODE");
+                    string name = utility.GetColumnValue(dr, "SDIV_NAME");
+                    string month = utility.GetFormatedDate(utility.GetColumnValue(dr, "MONTH"));
+                    dv.RowFilter = string.Format("SDIV_CODE = '{0}'", cd);
+                    DataTable dt1 = dv.ToTable();
+                    coll.Add(new AssmntBatchWiseObject(cd, name, month, dt1));
+                }
+            }
+            return coll;
+        }
         public static string GetBillingStatus(string token)
         {
             string ret = "Error";
