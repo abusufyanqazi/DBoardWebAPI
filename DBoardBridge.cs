@@ -68,6 +68,27 @@ namespace DashBoardAPI
             return coll;
         }
 
+        public Bill GetBill(string kwh, string trf)
+        {
+            DataTable dt;
+            utility util = new utility();
+            DB_Utility objDbuTil = new DB_Utility(conStr);
+            Bill bObj;
+
+            DateTime firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            dt = objDbuTil.getBillData("1", kwh, firstDayOfMonth, lastDayOfMonth, trf);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                return new Bill(dt.Rows[0]["ENRCHRG"].ToString(), dt.Rows[0]["TR_SUR"].ToString(), "0", "0", "0", "0",
+                    "0", "0", "0", dt.Rows[0]["BILLSLABS"].ToString());
+            }
+
+            return null;
+
+        }
+
         public  List<CollectCompAssMnt> GetCollVsCompAssMnt(string token, string code)
         {
             DataTable dt;
