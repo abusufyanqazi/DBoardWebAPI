@@ -454,6 +454,12 @@ namespace util
             return fDate.ToString("dd-MMM-yy");
         }
 
+        public static string GetBillMonth(string unfDate)
+        {
+            DateTime fDate = new DateTime(1900, 01, 01);
+            DateTime.TryParse(unfDate, out fDate);
+            return fDate.ToString("MMM-yyyy");
+        }
         public string FormatDecimal(decimal value)
         {
             return value.ToString("00000000000.00");

@@ -12,16 +12,17 @@ namespace DashBoardAPI
         public string SDivCode { get; set; }
         public string SDivName { get; set; }
         public string IncDec { get; set; }
-        
+        public string ATC { get; set; }
         public Losses CurLoss{ get; set; }
 
         public Losses PrvLoss { get; set; }
-
+        
         public MonLosses(DataRowView dr)
         {
             this.SDivCode = utility.GetColumnValue(dr, "SDIV");
             this.SDivName = utility.GetColumnValue(dr, "SDIVNAME");
             this.IncDec = utility.GetColumnValue(dr, "VAR_INCDEC");
+            this.ATC = utility.GetColumnValue(dr, "ATC");
             this.CurLoss = new Losses(utility.GetColumnValue(dr, "RCV"),
                 utility.GetColumnValue(dr, "BIL"),
                 utility.GetColumnValue(dr, "LOS"),
