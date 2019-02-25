@@ -13,6 +13,12 @@ namespace DashBoardAPI
             // Web API configuration and services
 
             // Web API routes
+
+            config.Routes.MapHttpRoute(
+                name: "param5",
+                routeTemplate: "{controller}/{token}/{code}/{age}/{phase}/{trf}",
+                defaults: new { controller = "Values", action = "Get", token = RouteParameter.Optional, code = RouteParameter.Optional, age = RouteParameter.Optional, phase = RouteParameter.Optional, trf = RouteParameter.Optional}
+            );
             
             config.Routes.MapHttpRoute(
                 name: "Default",
