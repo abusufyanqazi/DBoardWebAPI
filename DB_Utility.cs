@@ -23,6 +23,245 @@ namespace DAL
             _constr = conStr;
         }
 
+        public DataTable GetDefSummAgeSlab(string pCode, DateTime pBillMon, string pType, string pStatus, string pTariff)
+        {
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+
+            string sortorder = "SRT_ORDER1";
+
+            string sql = @"SELECT rownum SrNO, SRT_ORDER2, SRT_ORDER1, SDIVCODE CODE, SDIV_NAME NAME, DEF_TYPE, DEF_STATUS, TARIFF_CAT, MAIN_DT " +
+                         ", B_PERIOD BILLMONTH, SLAB_ID, SLAB_NAME, CONSUMERS, AMOUNT " +
+                         "from VW_DEF_CONS_SUM_AGE_SLABS ";
+
+            if (!string.IsNullOrEmpty(pCode))
+            {
+                //sql += " WHERE SDIVCODE LIKE '" + code + "%'  AND SRT_ORDER2 " + sortorder;
+                sql += " WHERE SDIVCODE = '" + pCode + "'";
+            }
+
+            if (!string.IsNullOrEmpty(pType))
+            {
+                sql += " AND DEF_TYPE = '" + pType + "'";
+            }
+
+            if (!string.IsNullOrEmpty(pStatus))
+            {
+                sql += " AND DEF_STATUS = '" + pStatus + "'";
+
+            }
+
+            if (!string.IsNullOrEmpty(pTariff))
+            {
+                sql += " AND TARIFF_CAT = '" + pTariff + "'";
+
+            }
+
+            sql += " ORDER BY SRT_ORDER1";
+
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        public DataTable GetDefSummAmntSlab(string pCode, DateTime pBillMon, string pType, string pStatus, string pTariff)
+        {
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+
+            string sortorder = "SRT_ORDER1";
+
+            string sql = @"SELECT rownum SrNO, SRT_ORDER2, SRT_ORDER1, SDIVCODE CODE, SDIV_NAME NAME, DEF_TYPE, DEF_STATUS, TARIFF_CAT, MAIN_DT " +
+                         ", B_PERIOD BILLMONTH, SLAB_ID, SLAB_NAME, CONSUMERS, AMOUNT " +
+                         "from VW_DEF_CONS_SUM_AMNT_SLABS ";
+
+            if (!string.IsNullOrEmpty(pCode))
+            {
+                //sql += " WHERE SDIVCODE LIKE '" + code + "%'  AND SRT_ORDER2 " + sortorder;
+                sql += " WHERE SDIVCODE = '" + pCode + "'";
+            }
+
+            if (!string.IsNullOrEmpty(pType))
+            {
+                sql += " AND DEF_TYPE = '" + pType + "'";
+            }
+
+            if (!string.IsNullOrEmpty(pStatus))
+            {
+                sql += " AND DEF_STATUS = '" + pStatus + "'";
+
+            }
+
+            if (!string.IsNullOrEmpty(pTariff))
+            {
+                sql += " AND TARIFF_CAT = '" + pTariff + "'";
+
+            }
+
+            sql += " ORDER BY SRT_ORDER1";
+
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pCode">office code</param>
+        /// <param name="pBillMon">billing month</param>
+        /// <param name="pBatchFrom">starting batch no.</param>
+        /// <param name="pBatchTo">ending batch no.</param>
+        /// <param name="pUnit">with & without units(0), with unit(1), without units(2) </param>
+        /// <returns></returns>
+        public DataTable GetCRAdjustments(string pCode, DateTime pBillMon, string pBatchFrom, string pBatchTo, char pUnit)
+        {
+            OracleConnection con = null;
+            OracleCommand cmd;
+            con = new OracleConnection(_constr);
+
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+
+            string sortorder = "SRT_ORDER1";
+
+            string sql = @"SELECT rownum SrNO, SRT_ORDER2, SRT_ORDER1, SDIVCODE CODE, SDIV_NAME NAME, BATCH, REF_NO, NAME CONS_NAME, ADJ_NO, RO_ADJ_DATE, " +
+                         "MAIN_DATE, POSTING_DATE, B_PERIOD BILLMONTH, UNITS_ADJ, AMOUNT_ADJ " +
+                         "from VW_CR_ADJMS ";
+
+            if (!string.IsNullOrEmpty(pCode))
+            {
+                //sql += " WHERE SDIVCODE LIKE '" + code + "%'  AND SRT_ORDER2 " + sortorder;
+                sql += " WHERE SDIVCODE = '" + pCode + "'";
+            }
+
+            if (!string.IsNullOrEmpty(pBatchFrom) && !string.IsNullOrEmpty(pBatchTo))
+            {
+                sql += " AND BATCH BETWEEN '" + pBatchFrom + "' and '" + pBatchTo + "'";
+            }
+
+            if (pUnit!=' ' && pUnit!='0')
+            {
+                if(pUnit=='1')
+                {
+                    sql += " AND nvl(UNITS_ADJ,0) != 0 ";
+                }
+                else
+                {
+                    sql += " AND nvl(UNITS_ADJ,0) = 0 ";
+
+                }
+            }
+
+           
+            sql += " ORDER BY SRT_ORDER1";
+
+            cmd = new OracleCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            OracleDataAdapter ad = new OracleDataAdapter();
+            ad.SelectCommand = cmd;
+            try
+            {
+                ad.Fill(ds);
+
+            }
+            catch (Exception ex)
+            {
+                DataTable dtErr = new DataTable();
+                dtErr.Columns.Add("Desc");
+                DataRow drErr = dtErr.NewRow();
+                drErr["Desc"] = ex.ToString();
+                dtErr.Rows.Add(drErr);
+                return dtErr;
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
         public DataTable GetDefectiveMeterDetails(string code, DateTime billMon, string age, string phase, string trf)
         {
             OracleConnection con = null;
@@ -378,7 +617,7 @@ namespace DAL
             {
                 sql += " WHERE SDIVCODE LIKE '" + code + "%'  AND SRT_ORDER2 " + sortorder
                     ////+ " AND BILLMONTH='01-" + billMon.ToString("MMM") + "-" + billMon.ToString("yyyy") + "'"
-                    + " GROUP BY 'ColumnMissingInView' , SDIVCODE , SDIV_NAME"
+                    + " GROUP BY B_PERIOD , SDIVCODE , SDIV_NAME"
                        + " ORDER BY SDIVCODE";
             }
             cmd = new OracleCommand(sql, con);
